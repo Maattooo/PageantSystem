@@ -1615,11 +1615,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Martin\\Database\\Final_Pageant\\pageant1\\pageant1.vbproj",
+      "projectUniqueName": "D:\\Martin\\Database\\PageantSystem\\pageant1\\pageant1.vbproj",
       "projectName": "pageant1",
-      "projectPath": "D:\\Martin\\Database\\Final_Pageant\\pageant1\\pageant1.vbproj",
+      "projectPath": "D:\\Martin\\Database\\PageantSystem\\pageant1\\pageant1.vbproj",
       "packagesPath": "C:\\Users\\Mamaradlo Family\\.nuget\\packages\\",
-      "outputPath": "D:\\Martin\\Database\\Final_Pageant\\pageant1\\obj\\",
+      "outputPath": "D:\\Martin\\Database\\PageantSystem\\pageant1\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

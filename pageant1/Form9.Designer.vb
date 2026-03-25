@@ -22,6 +22,7 @@ Partial Class Form9
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form9))
         Label1 = New Label()
         loadbtn = New Button()
         Clearbtn = New Button()
@@ -34,6 +35,12 @@ Partial Class Form9
         Button1 = New Button()
         gendercmbb = New ComboBox()
         Label2 = New Label()
+        judgecmbb = New ComboBox()
+        Label3 = New Label()
+        PrintDialog1 = New PrintDialog()
+        PrintDocument1 = New Printing.PrintDocument()
+        PrintPreviewDialog1 = New PrintPreviewDialog()
+        printbtn = New Button()
         CType(DataGridView1, ComponentModel.ISupportInitialize).BeginInit()
         Panel1.SuspendLayout()
         SuspendLayout()
@@ -49,7 +56,7 @@ Partial Class Form9
         ' 
         ' loadbtn
         ' 
-        loadbtn.Location = New Point(153, 331)
+        loadbtn.Location = New Point(153, 355)
         loadbtn.Margin = New Padding(3, 2, 3, 2)
         loadbtn.Name = "loadbtn"
         loadbtn.Size = New Size(113, 33)
@@ -59,7 +66,7 @@ Partial Class Form9
         ' 
         ' Clearbtn
         ' 
-        Clearbtn.Location = New Point(359, 331)
+        Clearbtn.Location = New Point(359, 355)
         Clearbtn.Margin = New Padding(3, 2, 3, 2)
         Clearbtn.Name = "Clearbtn"
         Clearbtn.Size = New Size(113, 33)
@@ -162,12 +169,57 @@ Partial Class Form9
         Label2.TabIndex = 100
         Label2.Text = "Gender:"
         ' 
+        ' judgecmbb
+        ' 
+        judgecmbb.FormattingEnabled = True
+        judgecmbb.Location = New Point(12, 285)
+        judgecmbb.Margin = New Padding(3, 2, 3, 2)
+        judgecmbb.Name = "judgecmbb"
+        judgecmbb.Size = New Size(190, 23)
+        judgecmbb.TabIndex = 103
+        ' 
+        ' Label3
+        ' 
+        Label3.AutoSize = True
+        Label3.Location = New Point(12, 268)
+        Label3.Name = "Label3"
+        Label3.Size = New Size(41, 15)
+        Label3.TabIndex = 102
+        Label3.Text = "Judge:"
+        ' 
+        ' PrintDialog1
+        ' 
+        PrintDialog1.UseEXDialog = True
+        ' 
+        ' PrintPreviewDialog1
+        ' 
+        PrintPreviewDialog1.AutoScrollMargin = New Size(0, 0)
+        PrintPreviewDialog1.AutoScrollMinSize = New Size(0, 0)
+        PrintPreviewDialog1.ClientSize = New Size(400, 300)
+        PrintPreviewDialog1.Enabled = True
+        PrintPreviewDialog1.Icon = CType(resources.GetObject("PrintPreviewDialog1.Icon"), Icon)
+        PrintPreviewDialog1.Name = "PrintPreviewDialog1"
+        PrintPreviewDialog1.Visible = False
+        ' 
+        ' printbtn
+        ' 
+        printbtn.Location = New Point(577, 355)
+        printbtn.Margin = New Padding(3, 2, 3, 2)
+        printbtn.Name = "printbtn"
+        printbtn.Size = New Size(113, 33)
+        printbtn.TabIndex = 104
+        printbtn.Text = "Print"
+        printbtn.UseVisualStyleBackColor = True
+        ' 
         ' Form9
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         BackColor = SystemColors.AppWorkspace
         ClientSize = New Size(889, 456)
+        Controls.Add(printbtn)
+        Controls.Add(judgecmbb)
+        Controls.Add(Label3)
         Controls.Add(gendercmbb)
         Controls.Add(Label2)
         Controls.Add(Panel1)
@@ -198,4 +250,10 @@ Partial Class Form9
     Friend WithEvents Button1 As Button
     Friend WithEvents gendercmbb As ComboBox
     Friend WithEvents Label2 As Label
+    Friend WithEvents judgecmbb As ComboBox
+    Friend WithEvents Label3 As Label
+    Friend WithEvents PrintDialog1 As PrintDialog
+    Friend WithEvents PrintDocument1 As Printing.PrintDocument
+    Friend WithEvents PrintPreviewDialog1 As PrintPreviewDialog
+    Friend WithEvents printbtn As Button
 End Class

@@ -16,7 +16,7 @@ Imports System.Reflection
 <Assembly: System.Reflection.AssemblyCompanyAttribute("pageant1"),  _
  Assembly: System.Reflection.AssemblyConfigurationAttribute("Debug"),  _
  Assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0"),  _
- Assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0"),  _
+ Assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ad7f5a841353f499e669bcf1966fdb67bba9210f"),  _
  Assembly: System.Reflection.AssemblyProductAttribute("pageant1"),  _
  Assembly: System.Reflection.AssemblyTitleAttribute("pageant1"),  _
  Assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0"),  _

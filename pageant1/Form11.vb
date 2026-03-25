@@ -434,4 +434,24 @@ Public Class Form11
         Me.Close()
     End Sub
 
+    Private Sub totalscore()
+        Dim total As Integer
+
+        total = Val(score1.Text) + Val(score2.Text) + Val(score3.Text)
+
+        Totals.Text = total.ToString()
+    End Sub
+
+    Private Sub score1_TextChanged(sender As Object, e As EventArgs) Handles score1.TextChanged
+        totalscore()
+    End Sub
+
+    Private Sub score2_TextChanged(sender As Object, e As EventArgs) Handles score2.TextChanged
+        totalscore()
+    End Sub
+
+    Private Sub score3_TextChanged(sender As Object, e As EventArgs) Handles score3.TextChanged
+        totalscore()
+    End Sub
+
 End Class

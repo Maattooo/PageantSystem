@@ -50,14 +50,13 @@ Partial Class Form11
         min2 = New Label()
         max1 = New Label()
         Panel4 = New Panel()
-        Panel5 = New Panel()
+        Totals = New Label()
+        Label5 = New Label()
+        score1 = New TextBox()
+        score2 = New TextBox()
         score3 = New TextBox()
         Label2 = New Label()
-        Panel6 = New Panel()
-        score2 = New TextBox()
         sub1 = New Label()
-        Panel7 = New Panel()
-        score1 = New TextBox()
         Label3 = New Label()
         CType(PictureBox1, ComponentModel.ISupportInitialize).BeginInit()
         Panel1.SuspendLayout()
@@ -66,9 +65,6 @@ Partial Class Form11
         Panel3.SuspendLayout()
         Panel8.SuspendLayout()
         Panel4.SuspendLayout()
-        Panel5.SuspendLayout()
-        Panel6.SuspendLayout()
-        Panel7.SuspendLayout()
         SuspendLayout()
         ' 
         ' Judgeinfo
@@ -143,24 +139,24 @@ Partial Class Form11
         ' 
         ' prebtn
         ' 
-        prebtn.Font = New Font("Segoe UI", 12F, FontStyle.Bold)
+        prebtn.Font = New Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         prebtn.Location = New Point(249, 446)
         prebtn.Margin = New Padding(3, 2, 3, 2)
         prebtn.Name = "prebtn"
         prebtn.Size = New Size(90, 28)
         prebtn.TabIndex = 26
-        prebtn.Text = "<--"
+        prebtn.Text = "Prev"
         prebtn.UseVisualStyleBackColor = True
         ' 
         ' nextbtn
         ' 
-        nextbtn.Font = New Font("Segoe UI", 12F, FontStyle.Bold)
+        nextbtn.Font = New Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         nextbtn.Location = New Point(501, 446)
         nextbtn.Margin = New Padding(3, 2, 3, 2)
         nextbtn.Name = "nextbtn"
         nextbtn.Size = New Size(90, 28)
         nextbtn.TabIndex = 27
-        nextbtn.Text = "-->"
+        nextbtn.Text = "Next"
         nextbtn.UseVisualStyleBackColor = True
         ' 
         ' progresslabel
@@ -260,7 +256,7 @@ Partial Class Form11
         Panel3.Controls.Add(Panel4)
         Panel3.Location = New Point(220, 174)
         Panel3.Name = "Panel3"
-        Panel3.Size = New Size(391, 238)
+        Panel3.Size = New Size(441, 251)
         Panel3.TabIndex = 89
         ' 
         ' Panel8
@@ -275,9 +271,9 @@ Partial Class Form11
         Panel8.Controls.Add(min2)
         Panel8.Controls.Add(max1)
         Panel8.Dock = DockStyle.Right
-        Panel8.Location = New Point(242, 0)
+        Panel8.Location = New Point(292, 0)
         Panel8.Name = "Panel8"
-        Panel8.Size = New Size(149, 238)
+        Panel8.Size = New Size(149, 251)
         Panel8.TabIndex = 99
         ' 
         ' max3
@@ -363,94 +359,91 @@ Partial Class Form11
         ' Panel4
         ' 
         Panel4.BackColor = SystemColors.ButtonShadow
-        Panel4.Controls.Add(Panel5)
+        Panel4.Controls.Add(Totals)
+        Panel4.Controls.Add(Label5)
+        Panel4.Controls.Add(score1)
+        Panel4.Controls.Add(score2)
+        Panel4.Controls.Add(score3)
         Panel4.Controls.Add(Label2)
-        Panel4.Controls.Add(Panel6)
         Panel4.Controls.Add(sub1)
-        Panel4.Controls.Add(Panel7)
         Panel4.Controls.Add(Label3)
         Panel4.Dock = DockStyle.Left
         Panel4.Location = New Point(0, 0)
         Panel4.Name = "Panel4"
-        Panel4.Size = New Size(212, 238)
+        Panel4.Size = New Size(212, 251)
         Panel4.TabIndex = 0
         ' 
-        ' Panel5
+        ' Totals
         ' 
-        Panel5.BackColor = SystemColors.Window
-        Panel5.Controls.Add(score3)
-        Panel5.Location = New Point(27, 163)
-        Panel5.Name = "Panel5"
-        Panel5.Size = New Size(92, 27)
-        Panel5.TabIndex = 101
+        Totals.AutoSize = True
+        Totals.Font = New Font("Segoe UI", 14.25F, FontStyle.Bold Or FontStyle.Underline, GraphicsUnit.Point, CByte(0))
+        Totals.Location = New Point(95, 201)
+        Totals.Name = "Totals"
+        Totals.Size = New Size(22, 25)
+        Totals.TabIndex = 104
+        Totals.Text = ".."
+        ' 
+        ' Label5
+        ' 
+        Label5.AutoSize = True
+        Label5.Location = New Point(54, 209)
+        Label5.Name = "Label5"
+        Label5.Size = New Size(35, 15)
+        Label5.TabIndex = 103
+        Label5.Text = "Total:"
+        ' 
+        ' score1
+        ' 
+        score1.Location = New Point(54, 54)
+        score1.Margin = New Padding(3, 2, 3, 2)
+        score1.Name = "score1"
+        score1.Size = New Size(93, 23)
+        score1.TabIndex = 3
+        score1.TextAlign = HorizontalAlignment.Center
+        ' 
+        ' score2
+        ' 
+        score2.Location = New Point(54, 111)
+        score2.Margin = New Padding(3, 2, 3, 2)
+        score2.Name = "score2"
+        score2.Size = New Size(93, 23)
+        score2.TabIndex = 15
+        score2.TextAlign = HorizontalAlignment.Center
         ' 
         ' score3
         ' 
-        score3.Location = New Point(2, 2)
+        score3.Location = New Point(54, 166)
         score3.Margin = New Padding(3, 2, 3, 2)
         score3.Name = "score3"
-        score3.Size = New Size(88, 23)
+        score3.Size = New Size(93, 23)
         score3.TabIndex = 17
+        score3.TextAlign = HorizontalAlignment.Center
         ' 
         ' Label2
         ' 
         Label2.AutoSize = True
         Label2.Font = New Font("Century", 9.75F)
-        Label2.Location = New Point(24, 85)
+        Label2.Location = New Point(29, 93)
         Label2.Name = "Label2"
         Label2.Size = New Size(37, 16)
         Label2.TabIndex = 89
         Label2.Text = "Sub2"
         ' 
-        ' Panel6
-        ' 
-        Panel6.BackColor = SystemColors.Window
-        Panel6.Controls.Add(score2)
-        Panel6.Location = New Point(27, 103)
-        Panel6.Name = "Panel6"
-        Panel6.Size = New Size(92, 27)
-        Panel6.TabIndex = 100
-        ' 
-        ' score2
-        ' 
-        score2.Location = New Point(2, 2)
-        score2.Margin = New Padding(3, 2, 3, 2)
-        score2.Name = "score2"
-        score2.Size = New Size(87, 23)
-        score2.TabIndex = 15
-        ' 
         ' sub1
         ' 
         sub1.AutoSize = True
         sub1.Font = New Font("Century", 9.75F)
-        sub1.Location = New Point(24, 28)
+        sub1.Location = New Point(29, 36)
         sub1.Name = "sub1"
         sub1.Size = New Size(37, 16)
         sub1.TabIndex = 88
         sub1.Text = "Sub1"
         ' 
-        ' Panel7
-        ' 
-        Panel7.BackColor = SystemColors.Window
-        Panel7.Controls.Add(score1)
-        Panel7.Location = New Point(27, 46)
-        Panel7.Name = "Panel7"
-        Panel7.Size = New Size(92, 27)
-        Panel7.TabIndex = 99
-        ' 
-        ' score1
-        ' 
-        score1.Location = New Point(3, 2)
-        score1.Margin = New Padding(3, 2, 3, 2)
-        score1.Name = "score1"
-        score1.Size = New Size(87, 23)
-        score1.TabIndex = 3
-        ' 
         ' Label3
         ' 
         Label3.AutoSize = True
         Label3.Font = New Font("Century", 9.75F)
-        Label3.Location = New Point(27, 145)
+        Label3.Location = New Point(29, 148)
         Label3.Name = "Label3"
         Label3.Size = New Size(37, 16)
         Label3.TabIndex = 90
@@ -485,12 +478,6 @@ Partial Class Form11
         Panel8.PerformLayout()
         Panel4.ResumeLayout(False)
         Panel4.PerformLayout()
-        Panel5.ResumeLayout(False)
-        Panel5.PerformLayout()
-        Panel6.ResumeLayout(False)
-        Panel6.PerformLayout()
-        Panel7.ResumeLayout(False)
-        Panel7.PerformLayout()
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -522,14 +509,13 @@ Partial Class Form11
     Friend WithEvents min2 As Label
     Friend WithEvents max1 As Label
     Friend WithEvents Panel4 As Panel
-    Friend WithEvents Panel5 As Panel
     Friend WithEvents score3 As TextBox
     Friend WithEvents Label2 As Label
-    Friend WithEvents Panel6 As Panel
     Friend WithEvents score2 As TextBox
     Friend WithEvents sub1 As Label
-    Friend WithEvents Panel7 As Panel
     Friend WithEvents score1 As TextBox
     Friend WithEvents Label3 As Label
     Friend WithEvents category As Label
+    Friend WithEvents Label5 As Label
+    Friend WithEvents Totals As Label
 End Class

@@ -189,7 +189,7 @@ Partial Class Form2
         Panel1.Location = New Point(0, 0)
         Panel1.Margin = New Padding(3, 2, 3, 2)
         Panel1.Name = "Panel1"
-        Panel1.Size = New Size(775, 38)
+        Panel1.Size = New Size(776, 38)
         Panel1.TabIndex = 24
         ' 
         ' Label7
@@ -249,7 +249,7 @@ Partial Class Form2
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         BackColor = SystemColors.AppWorkspace
-        ClientSize = New Size(775, 349)
+        ClientSize = New Size(776, 338)
         Controls.Add(programIDtxt)
         Controls.Add(contestantnum)
         Controls.Add(GenderIDtxt)
