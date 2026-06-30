@@ -1,4 +1,4 @@
-﻿Imports MySql.Data.MySqlClient
+Imports MySql.Data.MySqlClient
 Imports System.IO
 
 Public Class Form2
@@ -110,12 +110,12 @@ Public Class Form2
                 imgBytes = File.ReadAllBytes(selectedImagePath)
             End If
 
-            con.Open()
-
             If ContestantExists(contestantnum.Text.Trim(), GenderIDtxt.SelectedValue) Then
                 MessageBox.Show("A contestant with this number already exists for this gender.")
                 Exit Sub
             End If
+
+            con.Open()
 
             Dim insertQuery As String = "
                 INSERT INTO contestants (Contestant_Number, Full_Name, Gender_ID, Program_ID, Picture)
