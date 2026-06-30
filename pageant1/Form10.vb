@@ -1,4 +1,4 @@
-﻿Imports MySql.Data.MySqlClient
+Imports MySql.Data.MySqlClient
 
 Public Class Form10
     Dim cmd As MySqlCommand
@@ -41,17 +41,47 @@ Public Class Form10
             Exit Sub
         End If
 
+        ' Numeric password validation to prevent INT(11) DB cast exceptions
+        Dim numericPassword As Integer
+        If Not Integer.TryParse(passwordtxt.Text.Trim(), numericPassword) Then
+            MessageBox.Show("Invalid password format. Passwords must be numeric only.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            passwordtxt.Clear()
+            Exit Sub
+        End If
+
         Try
             Dim query As String = "SELECT * FROM judges WHERE Judge_ID=@JudgeID AND Password=@Password"
             cmd = New MySqlCommand(query, con)
             cmd.Parameters.AddWithValue("@JudgeID", fullnametxt.SelectedValue)
-            cmd.Parameters.AddWithValue("@Password", passwordtxt.Text.Trim())
+            cmd.Parameters.AddWithValue("@Password", numericPassword)
 
             adapter = New MySqlDataAdapter(cmd)
             dt = New DataTable()
             adapter.Fill(dt)
 
             If dt.Rows.Count > 0 Then
+                ' Enforce Single-Device Login
+                Dim activeDevice As String = If(IsDBNull(dt.Rows(0)("Active_Device_ID")), "", dt.Rows(0)("Active_Device_ID").ToString())
+                Dim currentDevice As String = System.Net.Dns.GetHostName()
+
+                If Not String.IsNullOrEmpty(activeDevice) AndAlso activeDevice <> currentDevice Then
+                    MessageBox.Show("This judge account is already logged in on device: " & activeDevice & vbCrLf &
+                                    "Please log out on that device or ask the administrator to reset your session.",
+                                    "Session Locked", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                    passwordtxt.Clear()
+                    Exit Sub
+                End If
+
+                ' Update Active_Device_ID in database
+                Dim updateQuery As String = "UPDATE judges SET Active_Device_ID=@DeviceID WHERE Judge_ID=@JudgeID"
+                Using updateCmd As New MySqlCommand(updateQuery, con)
+                    updateCmd.Parameters.AddWithValue("@DeviceID", currentDevice)
+                    updateCmd.Parameters.AddWithValue("@JudgeID", fullnametxt.SelectedValue)
+                    con.Open()
+                    updateCmd.ExecuteNonQuery()
+                    SafeCloseConnection()
+                End Using
+
                 Dim judgeID As Integer = Convert.ToInt32(dt.Rows(0)("Judge_ID"))
                 Dim judgeName As String = dt.Rows(0)("Full_Name").ToString()
                 Dim judgeGender As Integer = 0

@@ -369,6 +369,7 @@ Public Class Form11
     End Sub
 
     Private Sub savebtn_Click(sender As Object, e As EventArgs) Handles savebtn.Click
+        If Not VerifyActiveSession() Then Exit Sub
         If contestantcmbb.SelectedIndex = -1 Then
             MessageBox.Show("Please select a contestant.")
             Exit Sub
@@ -500,4 +501,31 @@ Public Class Form11
         totalscore()
     End Sub
 
+    Private Function VerifyActiveSession() As Boolean
+        Try
+            Dim query As String = "SELECT Active_Device_ID FROM judges WHERE Judge_ID = @jid"
+            Dim activeDevice As String = ""
+            Using cmd As New MySqlCommand(query, con)
+                cmd.Parameters.AddWithValue("@jid", judgeID)
+                con.Open()
+                Dim result = cmd.ExecuteScalar()
+                SafeCloseConnection()
+                If result IsNot Nothing AndAlso Not IsDBNull(result) Then
+                    activeDevice = result.ToString()
+                End If
+            End Using
+
+            Dim currentDevice As String = System.Net.Dns.GetHostName()
+            If activeDevice <> currentDevice Then
+                MessageBox.Show("Your session has been terminated because this judge account logged in on another device.",
+                                "Session Terminated", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Me.Close()
+                Return False
+            End If
+            Return True
+        Catch ex As Exception
+            If con.State = ConnectionState.Open Then SafeCloseConnection()
+            Return True
+        End Try
+    End Function
 End Class

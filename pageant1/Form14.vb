@@ -1,4 +1,4 @@
-﻿Imports MySql.Data.MySqlClient
+Imports MySql.Data.MySqlClient
 
 Public Class Form14
     Public judgeID As Integer
@@ -134,7 +134,20 @@ Public Class Form14
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         Me.Close()
-        Form10.Show()
     End Sub
 
+    Private Sub Form14_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        Try
+            Dim query As String = "UPDATE judges SET Active_Device_ID = NULL WHERE Judge_ID = @jid"
+            Using cmd As New MySqlCommand(query, con)
+                cmd.Parameters.AddWithValue("@jid", judgeID)
+                con.Open()
+                cmd.ExecuteNonQuery()
+                SafeCloseConnection()
+            End Using
+        Catch ex As Exception
+            If con.State = ConnectionState.Open Then SafeCloseConnection()
+        End Try
+        Form10.Show()
+    End Sub
 End Class
