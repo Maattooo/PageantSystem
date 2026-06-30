@@ -1,4 +1,4 @@
-﻿Imports System.IO
+Imports System.IO
 Imports System.Globalization
 Imports MySql.Data.MySqlClient
 Imports System.Diagnostics
@@ -14,6 +14,7 @@ Public Class Form9
     Dim printPreview As New PrintPreviewDialog()
     Dim printFont As New Font("Arial", 10)
     Dim currentY As Integer
+    Dim nextRowToPrint As Integer = 0
 
     Private Sub Form9_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         LoadCriteria()
@@ -251,6 +252,7 @@ Public Class Form9
             Exit Sub
         End If
 
+        nextRowToPrint = 0
         printDoc.DefaultPageSettings.Landscape = True
         printPreview.Document = printDoc
         AddHandler printDoc.PrintPage, AddressOf PrintPageHandler
@@ -318,7 +320,8 @@ Public Class Form9
         e.Graphics.DrawLine(Pens.Black, leftMargin, currentY, e.MarginBounds.Right, currentY)
         currentY += 5
 
-        For Each row As DataGridViewRow In DataGridView1.Rows
+        For rowIndex As Integer = nextRowToPrint To DataGridView1.Rows.Count - 1
+            Dim row As DataGridViewRow = DataGridView1.Rows(rowIndex)
             currentX = leftMargin
             For i As Integer = 0 To totalColCount - 1
                 Dim valueStr As String = ""
@@ -332,12 +335,14 @@ Public Class Form9
             currentY += lineHeight
 
             If currentY > e.MarginBounds.Bottom - lineHeight Then
+                nextRowToPrint = rowIndex + 1
                 e.HasMorePages = True
                 Return
             End If
         Next
 
         e.HasMorePages = False
+        nextRowToPrint = 0
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click

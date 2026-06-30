@@ -1,4 +1,4 @@
-﻿Imports MySql.Data.MySqlClient
+Imports MySql.Data.MySqlClient
 Imports System.Windows.Forms
 Imports System.Timers
 Imports System.Drawing.Printing
@@ -14,6 +14,7 @@ Public Class Form12
     Dim printPreview As New PrintPreviewDialog()
     Dim printFont As New Font("Arial", 10)
     Dim currentY As Integer
+    Dim nextRowToPrint As Integer = 0
 
 
 
@@ -257,6 +258,7 @@ Public Class Form12
             Exit Sub
         End If
 
+        nextRowToPrint = 0
         printDoc.DefaultPageSettings.Landscape = True
         printPreview.Document = printDoc
         AddHandler printDoc.PrintPage, AddressOf PrintPageHandler
@@ -321,7 +323,8 @@ Public Class Form12
         e.Graphics.DrawLine(Pens.Black, leftMargin, currentY, e.MarginBounds.Right, currentY)
         currentY += 5
 
-        For Each row As DataGridViewRow In DataGridView1.Rows
+        For rowIndex As Integer = nextRowToPrint To DataGridView1.Rows.Count - 1
+            Dim row As DataGridViewRow = DataGridView1.Rows(rowIndex)
             currentX = leftMargin
             For i As Integer = 0 To totalColCount - 1
                 Dim value As String = If(row.Cells(i).Value IsNot Nothing, row.Cells(i).Value.ToString(), "")
@@ -331,12 +334,14 @@ Public Class Form12
             currentY += lineHeight
 
             If currentY > e.MarginBounds.Bottom - lineHeight Then
+                nextRowToPrint = rowIndex + 1
                 e.HasMorePages = True
                 Return
             End If
         Next
 
         e.HasMorePages = False
+        nextRowToPrint = 0
     End Sub
 
 
