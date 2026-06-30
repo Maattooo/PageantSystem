@@ -1,12 +1,21 @@
-﻿Imports MySql.Data.MySqlClient
+Imports MySql.Data.MySqlClient
 Imports System.Data
 
 Public Class Form7
     Dim cmd As MySqlCommand
     Dim adapter As MySqlDataAdapter
     Dim dt As New DataTable
+    Private WithEvents ResetSessionbtn As Button
 
     Private Sub Form7_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ' Programmatically add Reset Session button
+        ResetSessionbtn = New Button()
+        ResetSessionbtn.Location = New Point(680, 344)
+        ResetSessionbtn.Size = New Size(113, 33)
+        ResetSessionbtn.Text = "Reset Session"
+        ResetSessionbtn.UseVisualStyleBackColor = True
+        Me.Controls.Add(ResetSessionbtn)
+
         LoadGender()
         LoadJudges()
         ConfigureGrid()
@@ -48,7 +57,8 @@ Public Class Form7
                     j.Judge_ID AS 'Judge ID',
                     j.Full_Name AS 'Full Name',
                     j.Password AS 'Password',
-                    g.Gender_Name AS 'Assigned Gender'
+                    g.Gender_Name AS 'Assigned Gender',
+                    j.Active_Device_ID AS 'Active Device'
                 FROM judges j
                 LEFT JOIN gender g ON j.Gender_ID = g.Gender_ID
                 ORDER BY j.Full_Name ASC;"
@@ -80,6 +90,13 @@ Public Class Form7
             Exit Sub
         End If
 
+        ' Validate password format to match DB int(11) datatype
+        Dim numericPassword As Integer
+        If Not Integer.TryParse(passwordtxt.Text.Trim(), numericPassword) Then
+            MessageBox.Show("Password must be a numeric integer value.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Exit Sub
+        End If
+
         Try
             Dim checkQuery As String = "SELECT COUNT(*) FROM judges WHERE Full_Name=@name AND Gender_ID=@gender"
             cmd = New MySqlCommand(checkQuery, con)
@@ -97,7 +114,7 @@ Public Class Form7
             Dim insertQuery As String = "INSERT INTO judges (Full_Name, Password, Gender_ID) VALUES (@name, @password, @gender)"
             cmd = New MySqlCommand(insertQuery, con)
             cmd.Parameters.AddWithValue("@name", fullnametxt.Text.Trim())
-            cmd.Parameters.AddWithValue("@password", passwordtxt.Text.Trim())
+            cmd.Parameters.AddWithValue("@password", numericPassword)
             cmd.Parameters.AddWithValue("@gender", gendercmbb.SelectedValue)
 
             con.Open()
@@ -119,6 +136,13 @@ Public Class Form7
             Exit Sub
         End If
 
+        ' Validate password format to match DB int(11) datatype
+        Dim numericPassword As Integer
+        If Not Integer.TryParse(passwordtxt.Text.Trim(), numericPassword) Then
+            MessageBox.Show("Password must be a numeric integer value.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Exit Sub
+        End If
+
         Try
             Dim judgeID As Integer = Convert.ToInt32(DataGridView1.CurrentRow.Cells("Judge ID").Value)
             Dim query As String = "
@@ -128,7 +152,7 @@ Public Class Form7
 
             cmd = New MySqlCommand(query, con)
             cmd.Parameters.AddWithValue("@name", fullnametxt.Text.Trim())
-            cmd.Parameters.AddWithValue("@password", passwordtxt.Text.Trim())
+            cmd.Parameters.AddWithValue("@password", numericPassword)
             cmd.Parameters.AddWithValue("@gender", gendercmbb.SelectedValue)
             cmd.Parameters.AddWithValue("@id", judgeID)
 
@@ -202,5 +226,34 @@ Public Class Form7
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         Me.Close()
+    End Sub
+
+    Private Sub ResetSessionbtn_Click(sender As Object, e As EventArgs) Handles ResetSessionbtn.Click
+        If DataGridView1.CurrentRow Is Nothing Then
+            MessageBox.Show("Please select a judge to reset their session.", "Selection Required", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Exit Sub
+        End If
+
+        Try
+            Dim judgeID As Integer = Convert.ToInt32(DataGridView1.CurrentRow.Cells("Judge ID").Value)
+            Dim judgeName As String = DataGridView1.CurrentRow.Cells("Full Name").Value.ToString()
+
+            Dim result = MessageBox.Show($"Are you sure you want to clear the active login session for Judge '{judgeName}'?", "Confirm Session Reset", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+            If result = DialogResult.No Then Exit Sub
+
+            Dim query As String = "UPDATE judges SET Active_Device_ID = NULL WHERE Judge_ID = @id"
+            Using cmd As New MySqlCommand(query, con)
+                cmd.Parameters.AddWithValue("@id", judgeID)
+                con.Open()
+                cmd.ExecuteNonQuery()
+                SafeCloseConnection()
+            End Using
+
+            MessageBox.Show("Session reset successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            LoadJudges()
+        Catch ex As Exception
+            MessageBox.Show("Error resetting judge session: " & ex.Message)
+            If con.State = ConnectionState.Open Then SafeCloseConnection()
+        End Try
     End Sub
 End Class
