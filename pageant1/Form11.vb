@@ -42,7 +42,9 @@ Public Class Form11
         End Select
 
         If File.Exists(imageFile) Then
-            PictureBox2.Image = Image.FromFile(imageFile)
+            Using tempImg = Image.FromFile(imageFile)
+                PictureBox2.Image = New Bitmap(tempImg)
+            End Using
             PictureBox2.SizeMode = PictureBoxSizeMode.Zoom
         Else
             PictureBox2.Image = Nothing

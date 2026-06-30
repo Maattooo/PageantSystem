@@ -91,7 +91,9 @@ Public Class Form2
         ofd.Title = "Select a Picture"
         If ofd.ShowDialog() = DialogResult.OK Then
             selectedImagePath = ofd.FileName
-            PictureBox1.Image = Image.FromFile(selectedImagePath)
+            Using tempImg = Image.FromFile(selectedImagePath)
+                PictureBox1.Image = New Bitmap(tempImg)
+            End Using
             PictureBox1.SizeMode = PictureBoxSizeMode.Zoom
         End If
     End Sub
