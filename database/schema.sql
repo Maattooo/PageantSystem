@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS `contestants`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `contestants` (
   `Contestant_ID` int(11) NOT NULL AUTO_INCREMENT,
-  `Contestant_Number` int(11) DEFAULT NULL,
+  `Contestant_Number` varchar(50) DEFAULT NULL,
   `Full_Name` varchar(100) NOT NULL,
   `Gender_ID` int(11) NOT NULL,
   `Program_ID` int(11) NOT NULL,
@@ -91,6 +91,7 @@ CREATE TABLE `judges` (
   `Full_Name` varchar(100) NOT NULL,
   `Password` int(11) NOT NULL,
   `Gender_ID` int(100) NOT NULL,
+  `Active_Device_ID` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Judge_ID`),
   KEY `10` (`Gender_ID`),
   CONSTRAINT `10` FOREIGN KEY (`Gender_ID`) REFERENCES `gender` (`Gender_ID`)
