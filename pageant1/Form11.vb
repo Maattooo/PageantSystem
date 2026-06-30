@@ -1,4 +1,4 @@
-﻿Imports System.IO
+Imports System.IO
 Imports MySql.Data.MySqlClient
 
 Public Class Form11
@@ -10,6 +10,7 @@ Public Class Form11
     Public selectedCriteriaName As String
     Public assignedGenderID As Integer
     Private isLoadingContestants As Boolean = False
+    Private subCriteriaCount As Integer = 0
 
 
     Dim cmd As MySqlCommand
@@ -57,20 +58,32 @@ Public Class Form11
                                FROM subcriteria WHERE Criteria_ID=@cid ORDER BY SubCriteria_ID ASC"
         cmd = New MySqlCommand(query, con)
         cmd.Parameters.AddWithValue("@cid", selectedCriteriaID)
-        adapter = New MySqlDataAdapter(cmd)
-        dt = New DataTable()
-        adapter.Fill(dt)
+        Dim subCriteriaTable As New DataTable()
+        Dim subAdapter As New MySqlDataAdapter(cmd)
+        subAdapter.Fill(subCriteriaTable)
+        subCriteriaCount = subCriteriaTable.Rows.Count
 
-        If dt.Rows.Count >= 3 Then
-            sub1.Text = dt.Rows(0)("SubCriteria_Name").ToString()
-            Label2.Text = dt.Rows(1)("SubCriteria_Name").ToString()
-            Label3.Text = dt.Rows(2)("SubCriteria_Name").ToString()
-            min1.Text = dt.Rows(0)("Min_Score").ToString()
-            min2.Text = dt.Rows(1)("Min_Score").ToString()
-            min3.Text = dt.Rows(2)("Min_Score").ToString()
-            max1.Text = dt.Rows(0)("Max_Score").ToString()
-            max2.Text = dt.Rows(1)("Max_Score").ToString()
-            max3.Text = dt.Rows(2)("Max_Score").ToString()
+        sub1.Visible = False : score1.Visible = False : min1.Visible = False : max1.Visible = False
+        Label2.Visible = False : score2.Visible = False : min2.Visible = False : max2.Visible = False
+        Label3.Visible = False : score3.Visible = False : min3.Visible = False : max3.Visible = False
+
+        If subCriteriaCount >= 1 Then
+            sub1.Text = subCriteriaTable.Rows(0)("SubCriteria_Name").ToString()
+            min1.Text = subCriteriaTable.Rows(0)("Min_Score").ToString()
+            max1.Text = subCriteriaTable.Rows(0)("Max_Score").ToString()
+            sub1.Visible = True : score1.Visible = True : min1.Visible = True : max1.Visible = True
+        End If
+        If subCriteriaCount >= 2 Then
+            Label2.Text = subCriteriaTable.Rows(1)("SubCriteria_Name").ToString()
+            min2.Text = subCriteriaTable.Rows(1)("Min_Score").ToString()
+            max2.Text = subCriteriaTable.Rows(1)("Max_Score").ToString()
+            Label2.Visible = True : score2.Visible = True : min2.Visible = True : max2.Visible = True
+        End If
+        If subCriteriaCount >= 3 Then
+            Label3.Text = subCriteriaTable.Rows(2)("SubCriteria_Name").ToString()
+            min3.Text = subCriteriaTable.Rows(2)("Min_Score").ToString()
+            max3.Text = subCriteriaTable.Rows(2)("Max_Score").ToString()
+            Label3.Visible = True : score3.Visible = True : min3.Visible = True : max3.Visible = True
         End If
     End Sub
 
@@ -237,7 +250,9 @@ Public Class Form11
                               FROM scores s
                               JOIN subcriteria sc ON s.SubCriteria_ID = sc.SubCriteria_ID
                               JOIN criteria cr ON sc.Criteria_ID = cr.Criteria_ID
+                              JOIN contestants con_g ON s.Contestant_ID = con_g.Contestant_ID
                               WHERE cr.Criteria_Name IN ('School Uniform','Shorts Wear','Formal Wear')
+                                AND con_g.Gender_ID = @gid
                               GROUP BY s.Contestant_ID
                               ORDER BY avg_score DESC
                               LIMIT 5
@@ -322,17 +337,23 @@ Public Class Form11
         cmd.Parameters.AddWithValue("@jid", judgeID)
         cmd.Parameters.AddWithValue("@cid", contestantcmbb.SelectedValue)
         cmd.Parameters.AddWithValue("@crid", selectedCriteriaID)
-        adapter = New MySqlDataAdapter(cmd)
-        dt = New DataTable()
-        adapter.Fill(dt)
+        Dim prevScoresTable As New DataTable()
+        Dim prevAdapter As New MySqlDataAdapter(cmd)
+        prevAdapter.Fill(prevScoresTable)
 
-        If dt.Rows.Count = 3 Then
-            score1.Text = dt.Rows(0)("Score").ToString()
-            score2.Text = dt.Rows(1)("Score").ToString()
-            score3.Text = dt.Rows(2)("Score").ToString()
-            score1.ReadOnly = True
-            score2.ReadOnly = True
-            score3.ReadOnly = True
+        If prevScoresTable.Rows.Count = subCriteriaCount AndAlso subCriteriaCount > 0 Then
+            If subCriteriaCount >= 1 Then
+                score1.Text = prevScoresTable.Rows(0)("Score").ToString()
+                score1.ReadOnly = True
+            End If
+            If subCriteriaCount >= 2 Then
+                score2.Text = prevScoresTable.Rows(1)("Score").ToString()
+                score2.ReadOnly = True
+            End If
+            If subCriteriaCount >= 3 Then
+                score3.Text = prevScoresTable.Rows(2)("Score").ToString()
+                score3.ReadOnly = True
+            End If
             savebtn.Enabled = False
         Else
             score1.Clear()
@@ -353,13 +374,17 @@ Public Class Form11
         If Not ValidateScores() Then Exit Sub
 
         Dim subs = GetSubCriteriaIDs()
-        Dim scores As Integer() = {CInt(score1.Text), CInt(score2.Text), CInt(score3.Text)}
+        Dim scores As New List(Of Integer)()
+        If subCriteriaCount >= 1 Then scores.Add(CInt(score1.Text))
+        If subCriteriaCount >= 2 Then scores.Add(CInt(score2.Text))
+        If subCriteriaCount >= 3 Then scores.Add(CInt(score3.Text))
 
         Try
             con.Open()
             Dim tx = con.BeginTransaction()
 
-            For i As Integer = 0 To 2
+            For i As Integer = 0 To subs.Count - 1
+                If i >= scores.Count Then Exit For
                 Dim q As String = "INSERT INTO scores (Judge_ID, Contestant_ID, Criteria_ID, SubCriteria_ID, Score)
                            VALUES (@jid, @cid, @crid, @sid, @scr)"
                 cmd = New MySqlCommand(q, con, tx)
@@ -383,9 +408,6 @@ Public Class Form11
         Finally
             SafeCloseConnection()
         End Try
-
-
-
     End Sub
 
     Private Function GetSubCriteriaIDs() As List(Of Integer)
@@ -404,16 +426,38 @@ Public Class Form11
 
 
     Private Function ValidateScores() As Boolean
-        Dim s1, s2, s3 As Integer
-        If Not Integer.TryParse(score1.Text, s1) OrElse Not Integer.TryParse(score2.Text, s2) OrElse Not Integer.TryParse(score3.Text, s3) Then
-            MessageBox.Show("Please enter valid numbers.")
-            Return False
+        If subCriteriaCount >= 1 Then
+            Dim s1 As Integer
+            If Not Integer.TryParse(score1.Text, s1) Then
+                MessageBox.Show("Please enter valid numbers.")
+                Return False
+            End If
+            If s1 < CInt(min1.Text) OrElse s1 > CInt(max1.Text) Then
+                MessageBox.Show("Scores must be within the allowed range.")
+                Return False
+            End If
         End If
-        If s1 < CInt(min1.Text) OrElse s1 > CInt(max1.Text) OrElse
-           s2 < CInt(min2.Text) OrElse s2 > CInt(max2.Text) OrElse
-           s3 < CInt(min3.Text) OrElse s3 > CInt(max3.Text) Then
-            MessageBox.Show("Scores must be within the allowed range.")
-            Return False
+        If subCriteriaCount >= 2 Then
+            Dim s2 As Integer
+            If Not Integer.TryParse(score2.Text, s2) Then
+                MessageBox.Show("Please enter valid numbers.")
+                Return False
+            End If
+            If s2 < CInt(min2.Text) OrElse s2 > CInt(max2.Text) Then
+                MessageBox.Show("Scores must be within the allowed range.")
+                Return False
+            End If
+        End If
+        If subCriteriaCount >= 3 Then
+            Dim s3 As Integer
+            If Not Integer.TryParse(score3.Text, s3) Then
+                MessageBox.Show("Please enter valid numbers.")
+                Return False
+            End If
+            If s3 < CInt(min3.Text) OrElse s3 > CInt(max3.Text) Then
+                MessageBox.Show("Scores must be within the allowed range.")
+                Return False
+            End If
         End If
         Return True
     End Function
